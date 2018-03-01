@@ -1,6 +1,7 @@
 package io.github.jhipster.application.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -28,17 +29,18 @@ public class LayerGroup implements Serializable {
     @Column(name = "group_name")
     private String groupName;
 
-    @OneToMany(mappedBy = "layerGroup")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @OneToMany(mappedBy = "layerGroup",fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("layerGroup")
+//    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Layer> layers = new HashSet<>();
 
-    @OneToMany(mappedBy = "parentGroup")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @OneToMany(mappedBy = "parentGroup",fetch = FetchType.EAGER)
+//    @JsonIgnoreProperties("layers")
+//    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<LayerGroup> subGroups = new HashSet<>();
 
     @ManyToOne
+    @JsonIgnoreProperties({"layers", "subGroups", "parentGroup"}) // 出于业务考虑，其实可以忽略掉，但出于CRUD维护关系需要保留id和name
     private LayerGroup parentGroup;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

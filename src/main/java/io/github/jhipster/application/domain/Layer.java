@@ -1,6 +1,6 @@
 package io.github.jhipster.application.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -24,6 +24,9 @@ import io.github.jhipster.application.domain.enumeration.PoiType;
 @Entity
 @Table(name = "layer")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+//@JsonIdentityInfo(
+//    generator = ObjectIdGenerators.PropertyGenerator.class,
+//    property = "id")
 public class Layer implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -72,15 +75,17 @@ public class Layer implements Serializable {
     @Column(name = "poi_url")
     private String poiURL;
 
-    @OneToMany(mappedBy = "layer")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @OneToMany(mappedBy = "layer",fetch = FetchType.EAGER)
+//    @JsonManagedReference
+    @JsonIgnoreProperties("layer")
+//    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Legend> legends = new HashSet<>();
 
     @ManyToOne
     private GisServer gisServer;
 
     @ManyToOne
+    @JsonIgnoreProperties({"layers", "subGroups", "parentGroup"}) // 出于业务考虑，其实可以忽略掉，但出于CRUD维护关系需要保留id和name
     private LayerGroup layerGroup;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
