@@ -2,11 +2,12 @@ package io.github.jhipster.application.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import io.github.jhipster.application.domain.Layer;
-
-import io.github.jhipster.application.repository.LayerRepository;
+import io.github.jhipster.application.service.LayerService;
 import io.github.jhipster.application.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.application.web.rest.util.HeaderUtil;
 import io.github.jhipster.application.web.rest.util.PaginationUtil;
+import io.github.jhipster.application.service.dto.LayerCriteria;
+import io.github.jhipster.application.service.LayerQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +35,13 @@ public class LayerResource {
 
     private static final String ENTITY_NAME = "layer";
 
-    private final LayerRepository layerRepository;
+    private final LayerService layerService;
 
-    public LayerResource(LayerRepository layerRepository) {
-        this.layerRepository = layerRepository;
+    private final LayerQueryService layerQueryService;
+
+    public LayerResource(LayerService layerService, LayerQueryService layerQueryService) {
+        this.layerService = layerService;
+        this.layerQueryService = layerQueryService;
     }
 
     /**
@@ -54,7 +58,7 @@ public class LayerResource {
         if (layer.getId() != null) {
             throw new BadRequestAlertException("A new layer cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Layer result = layerRepository.save(layer);
+        Layer result = layerService.save(layer);
         return ResponseEntity.created(new URI("/api/layers/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -76,7 +80,7 @@ public class LayerResource {
         if (layer.getId() == null) {
             return createLayer(layer);
         }
-        Layer result = layerRepository.save(layer);
+        Layer result = layerService.save(layer);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, layer.getId().toString()))
             .body(result);
@@ -86,13 +90,14 @@ public class LayerResource {
      * GET  /layers : get all the layers.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of layers in body
      */
     @GetMapping("/layers")
     @Timed
-    public ResponseEntity<List<Layer>> getAllLayers(Pageable pageable) {
-        log.debug("REST request to get a page of Layers");
-        Page<Layer> page = layerRepository.findAll(pageable);
+    public ResponseEntity<List<Layer>> getAllLayers(LayerCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get Layers by criteria: {}", criteria);
+        Page<Layer> page = layerQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/layers");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -107,7 +112,7 @@ public class LayerResource {
     @Timed
     public ResponseEntity<Layer> getLayer(@PathVariable Long id) {
         log.debug("REST request to get Layer : {}", id);
-        Layer layer = layerRepository.findOne(id);
+        Layer layer = layerService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(layer));
     }
 
@@ -121,7 +126,7 @@ public class LayerResource {
     @Timed
     public ResponseEntity<Void> deleteLayer(@PathVariable Long id) {
         log.debug("REST request to delete Layer : {}", id);
-        layerRepository.delete(id);
+        layerService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

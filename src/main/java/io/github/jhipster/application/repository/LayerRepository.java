@@ -11,6 +11,6 @@ import org.springframework.data.jpa.repository.*;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface LayerRepository extends JpaRepository<Layer, Long> {
+public interface LayerRepository extends JpaRepository<Layer, Long>, JpaSpecificationExecutor<Layer> {
 
 }

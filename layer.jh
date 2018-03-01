@@ -97,9 +97,9 @@ paginate * with pagination
 //dto * with mapstruct
 
 // Set filter options
-//filter Layer
+filter Layer, LayerGroup
 
 // Set service options to all except few
-//service all with serviceImpl
+service Layer, LayerGroup with serviceImpl
 // Set an angular suffix
 // angularSuffix * with mySuffix

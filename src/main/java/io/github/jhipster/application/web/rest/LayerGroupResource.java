@@ -2,11 +2,12 @@ package io.github.jhipster.application.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import io.github.jhipster.application.domain.LayerGroup;
-
-import io.github.jhipster.application.repository.LayerGroupRepository;
+import io.github.jhipster.application.service.LayerGroupService;
 import io.github.jhipster.application.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.application.web.rest.util.HeaderUtil;
 import io.github.jhipster.application.web.rest.util.PaginationUtil;
+import io.github.jhipster.application.service.dto.LayerGroupCriteria;
+import io.github.jhipster.application.service.LayerGroupQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +35,13 @@ public class LayerGroupResource {
 
     private static final String ENTITY_NAME = "layerGroup";
 
-    private final LayerGroupRepository layerGroupRepository;
+    private final LayerGroupService layerGroupService;
 
-    public LayerGroupResource(LayerGroupRepository layerGroupRepository) {
-        this.layerGroupRepository = layerGroupRepository;
+    private final LayerGroupQueryService layerGroupQueryService;
+
+    public LayerGroupResource(LayerGroupService layerGroupService, LayerGroupQueryService layerGroupQueryService) {
+        this.layerGroupService = layerGroupService;
+        this.layerGroupQueryService = layerGroupQueryService;
     }
 
     /**
@@ -54,7 +58,7 @@ public class LayerGroupResource {
         if (layerGroup.getId() != null) {
             throw new BadRequestAlertException("A new layerGroup cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        LayerGroup result = layerGroupRepository.save(layerGroup);
+        LayerGroup result = layerGroupService.save(layerGroup);
         return ResponseEntity.created(new URI("/api/layer-groups/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -76,7 +80,7 @@ public class LayerGroupResource {
         if (layerGroup.getId() == null) {
             return createLayerGroup(layerGroup);
         }
-        LayerGroup result = layerGroupRepository.save(layerGroup);
+        LayerGroup result = layerGroupService.save(layerGroup);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, layerGroup.getId().toString()))
             .body(result);
@@ -86,13 +90,14 @@ public class LayerGroupResource {
      * GET  /layer-groups : get all the layerGroups.
      *
      * @param pageable the pagination information
+     * @param criteria the criterias which the requested entities should match
      * @return the ResponseEntity with status 200 (OK) and the list of layerGroups in body
      */
     @GetMapping("/layer-groups")
     @Timed
-    public ResponseEntity<List<LayerGroup>> getAllLayerGroups(Pageable pageable) {
-        log.debug("REST request to get a page of LayerGroups");
-        Page<LayerGroup> page = layerGroupRepository.findAll(pageable);
+    public ResponseEntity<List<LayerGroup>> getAllLayerGroups(LayerGroupCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get LayerGroups by criteria: {}", criteria);
+        Page<LayerGroup> page = layerGroupQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/layer-groups");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -107,7 +112,7 @@ public class LayerGroupResource {
     @Timed
     public ResponseEntity<LayerGroup> getLayerGroup(@PathVariable Long id) {
         log.debug("REST request to get LayerGroup : {}", id);
-        LayerGroup layerGroup = layerGroupRepository.findOne(id);
+        LayerGroup layerGroup = layerGroupService.findOne(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(layerGroup));
     }
 
@@ -121,7 +126,7 @@ public class LayerGroupResource {
     @Timed
     public ResponseEntity<Void> deleteLayerGroup(@PathVariable Long id) {
         log.debug("REST request to delete LayerGroup : {}", id);
-        layerGroupRepository.delete(id);
+        layerGroupService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

@@ -3,8 +3,14 @@ package io.github.jhipster.application.web.rest;
 import io.github.jhipster.application.JhipsterSampleMysqlApp;
 
 import io.github.jhipster.application.domain.Layer;
+import io.github.jhipster.application.domain.Legend;
+import io.github.jhipster.application.domain.GisServer;
+import io.github.jhipster.application.domain.LayerGroup;
 import io.github.jhipster.application.repository.LayerRepository;
+import io.github.jhipster.application.service.LayerService;
 import io.github.jhipster.application.web.rest.errors.ExceptionTranslator;
+import io.github.jhipster.application.service.dto.LayerCriteria;
+import io.github.jhipster.application.service.LayerQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -66,6 +72,12 @@ public class LayerResourceIntTest {
     private LayerRepository layerRepository;
 
     @Autowired
+    private LayerService layerService;
+
+    @Autowired
+    private LayerQueryService layerQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -84,7 +96,7 @@ public class LayerResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final LayerResource layerResource = new LayerResource(layerRepository);
+        final LayerResource layerResource = new LayerResource(layerService, layerQueryService);
         this.restLayerMockMvc = MockMvcBuilders.standaloneSetup(layerResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -200,6 +212,364 @@ public class LayerResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllLayersByLayerNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where layerName equals to DEFAULT_LAYER_NAME
+        defaultLayerShouldBeFound("layerName.equals=" + DEFAULT_LAYER_NAME);
+
+        // Get all the layerList where layerName equals to UPDATED_LAYER_NAME
+        defaultLayerShouldNotBeFound("layerName.equals=" + UPDATED_LAYER_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersByLayerNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where layerName in DEFAULT_LAYER_NAME or UPDATED_LAYER_NAME
+        defaultLayerShouldBeFound("layerName.in=" + DEFAULT_LAYER_NAME + "," + UPDATED_LAYER_NAME);
+
+        // Get all the layerList where layerName equals to UPDATED_LAYER_NAME
+        defaultLayerShouldNotBeFound("layerName.in=" + UPDATED_LAYER_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersByLayerNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where layerName is not null
+        defaultLayerShouldBeFound("layerName.specified=true");
+
+        // Get all the layerList where layerName is null
+        defaultLayerShouldNotBeFound("layerName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersByIdentifierIsEqualToSomething() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where identifier equals to DEFAULT_IDENTIFIER
+        defaultLayerShouldBeFound("identifier.equals=" + DEFAULT_IDENTIFIER);
+
+        // Get all the layerList where identifier equals to UPDATED_IDENTIFIER
+        defaultLayerShouldNotBeFound("identifier.equals=" + UPDATED_IDENTIFIER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersByIdentifierIsInShouldWork() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where identifier in DEFAULT_IDENTIFIER or UPDATED_IDENTIFIER
+        defaultLayerShouldBeFound("identifier.in=" + DEFAULT_IDENTIFIER + "," + UPDATED_IDENTIFIER);
+
+        // Get all the layerList where identifier equals to UPDATED_IDENTIFIER
+        defaultLayerShouldNotBeFound("identifier.in=" + UPDATED_IDENTIFIER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersByIdentifierIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where identifier is not null
+        defaultLayerShouldBeFound("identifier.specified=true");
+
+        // Get all the layerList where identifier is null
+        defaultLayerShouldNotBeFound("identifier.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersBySourceIsEqualToSomething() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where source equals to DEFAULT_SOURCE
+        defaultLayerShouldBeFound("source.equals=" + DEFAULT_SOURCE);
+
+        // Get all the layerList where source equals to UPDATED_SOURCE
+        defaultLayerShouldNotBeFound("source.equals=" + UPDATED_SOURCE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersBySourceIsInShouldWork() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where source in DEFAULT_SOURCE or UPDATED_SOURCE
+        defaultLayerShouldBeFound("source.in=" + DEFAULT_SOURCE + "," + UPDATED_SOURCE);
+
+        // Get all the layerList where source equals to UPDATED_SOURCE
+        defaultLayerShouldNotBeFound("source.in=" + UPDATED_SOURCE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersBySourceIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where source is not null
+        defaultLayerShouldBeFound("source.specified=true");
+
+        // Get all the layerList where source is null
+        defaultLayerShouldNotBeFound("source.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersByPointQueryTypeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where pointQueryType equals to DEFAULT_POINT_QUERY_TYPE
+        defaultLayerShouldBeFound("pointQueryType.equals=" + DEFAULT_POINT_QUERY_TYPE);
+
+        // Get all the layerList where pointQueryType equals to UPDATED_POINT_QUERY_TYPE
+        defaultLayerShouldNotBeFound("pointQueryType.equals=" + UPDATED_POINT_QUERY_TYPE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersByPointQueryTypeIsInShouldWork() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where pointQueryType in DEFAULT_POINT_QUERY_TYPE or UPDATED_POINT_QUERY_TYPE
+        defaultLayerShouldBeFound("pointQueryType.in=" + DEFAULT_POINT_QUERY_TYPE + "," + UPDATED_POINT_QUERY_TYPE);
+
+        // Get all the layerList where pointQueryType equals to UPDATED_POINT_QUERY_TYPE
+        defaultLayerShouldNotBeFound("pointQueryType.in=" + UPDATED_POINT_QUERY_TYPE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersByPointQueryTypeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where pointQueryType is not null
+        defaultLayerShouldBeFound("pointQueryType.specified=true");
+
+        // Get all the layerList where pointQueryType is null
+        defaultLayerShouldNotBeFound("pointQueryType.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersByStyleIsEqualToSomething() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where style equals to DEFAULT_STYLE
+        defaultLayerShouldBeFound("style.equals=" + DEFAULT_STYLE);
+
+        // Get all the layerList where style equals to UPDATED_STYLE
+        defaultLayerShouldNotBeFound("style.equals=" + UPDATED_STYLE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersByStyleIsInShouldWork() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where style in DEFAULT_STYLE or UPDATED_STYLE
+        defaultLayerShouldBeFound("style.in=" + DEFAULT_STYLE + "," + UPDATED_STYLE);
+
+        // Get all the layerList where style equals to UPDATED_STYLE
+        defaultLayerShouldNotBeFound("style.in=" + UPDATED_STYLE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersByStyleIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where style is not null
+        defaultLayerShouldBeFound("style.specified=true");
+
+        // Get all the layerList where style is null
+        defaultLayerShouldNotBeFound("style.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersByPoiTypeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where poiType equals to DEFAULT_POI_TYPE
+        defaultLayerShouldBeFound("poiType.equals=" + DEFAULT_POI_TYPE);
+
+        // Get all the layerList where poiType equals to UPDATED_POI_TYPE
+        defaultLayerShouldNotBeFound("poiType.equals=" + UPDATED_POI_TYPE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersByPoiTypeIsInShouldWork() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where poiType in DEFAULT_POI_TYPE or UPDATED_POI_TYPE
+        defaultLayerShouldBeFound("poiType.in=" + DEFAULT_POI_TYPE + "," + UPDATED_POI_TYPE);
+
+        // Get all the layerList where poiType equals to UPDATED_POI_TYPE
+        defaultLayerShouldNotBeFound("poiType.in=" + UPDATED_POI_TYPE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersByPoiTypeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where poiType is not null
+        defaultLayerShouldBeFound("poiType.specified=true");
+
+        // Get all the layerList where poiType is null
+        defaultLayerShouldNotBeFound("poiType.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersByPoiURLIsEqualToSomething() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where poiURL equals to DEFAULT_POI_URL
+        defaultLayerShouldBeFound("poiURL.equals=" + DEFAULT_POI_URL);
+
+        // Get all the layerList where poiURL equals to UPDATED_POI_URL
+        defaultLayerShouldNotBeFound("poiURL.equals=" + UPDATED_POI_URL);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersByPoiURLIsInShouldWork() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where poiURL in DEFAULT_POI_URL or UPDATED_POI_URL
+        defaultLayerShouldBeFound("poiURL.in=" + DEFAULT_POI_URL + "," + UPDATED_POI_URL);
+
+        // Get all the layerList where poiURL equals to UPDATED_POI_URL
+        defaultLayerShouldNotBeFound("poiURL.in=" + UPDATED_POI_URL);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersByPoiURLIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        layerRepository.saveAndFlush(layer);
+
+        // Get all the layerList where poiURL is not null
+        defaultLayerShouldBeFound("poiURL.specified=true");
+
+        // Get all the layerList where poiURL is null
+        defaultLayerShouldNotBeFound("poiURL.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayersByLegendsIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Legend legends = LegendResourceIntTest.createEntity(em);
+        em.persist(legends);
+        em.flush();
+        layer.addLegends(legends);
+        layerRepository.saveAndFlush(layer);
+        Long legendsId = legends.getId();
+
+        // Get all the layerList where legends equals to legendsId
+        defaultLayerShouldBeFound("legendsId.equals=" + legendsId);
+
+        // Get all the layerList where legends equals to legendsId + 1
+        defaultLayerShouldNotBeFound("legendsId.equals=" + (legendsId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllLayersByGisServerIsEqualToSomething() throws Exception {
+        // Initialize the database
+        GisServer gisServer = GisServerResourceIntTest.createEntity(em);
+        em.persist(gisServer);
+        em.flush();
+        layer.setGisServer(gisServer);
+        layerRepository.saveAndFlush(layer);
+        Long gisServerId = gisServer.getId();
+
+        // Get all the layerList where gisServer equals to gisServerId
+        defaultLayerShouldBeFound("gisServerId.equals=" + gisServerId);
+
+        // Get all the layerList where gisServer equals to gisServerId + 1
+        defaultLayerShouldNotBeFound("gisServerId.equals=" + (gisServerId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllLayersByLayerGroupIsEqualToSomething() throws Exception {
+        // Initialize the database
+        LayerGroup layerGroup = LayerGroupResourceIntTest.createEntity(em);
+        em.persist(layerGroup);
+        em.flush();
+        layer.setLayerGroup(layerGroup);
+        layerRepository.saveAndFlush(layer);
+        Long layerGroupId = layerGroup.getId();
+
+        // Get all the layerList where layerGroup equals to layerGroupId
+        defaultLayerShouldBeFound("layerGroupId.equals=" + layerGroupId);
+
+        // Get all the layerList where layerGroup equals to layerGroupId + 1
+        defaultLayerShouldNotBeFound("layerGroupId.equals=" + (layerGroupId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultLayerShouldBeFound(String filter) throws Exception {
+        restLayerMockMvc.perform(get("/api/layers?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(layer.getId().intValue())))
+            .andExpect(jsonPath("$.[*].layerName").value(hasItem(DEFAULT_LAYER_NAME.toString())))
+            .andExpect(jsonPath("$.[*].identifier").value(hasItem(DEFAULT_IDENTIFIER.toString())))
+            .andExpect(jsonPath("$.[*].source").value(hasItem(DEFAULT_SOURCE.toString())))
+            .andExpect(jsonPath("$.[*].pointQueryType").value(hasItem(DEFAULT_POINT_QUERY_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].style").value(hasItem(DEFAULT_STYLE.toString())))
+            .andExpect(jsonPath("$.[*].poiType").value(hasItem(DEFAULT_POI_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].poiURL").value(hasItem(DEFAULT_POI_URL.toString())));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultLayerShouldNotBeFound(String filter) throws Exception {
+        restLayerMockMvc.perform(get("/api/layers?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+    }
+
+
+    @Test
+    @Transactional
     public void getNonExistingLayer() throws Exception {
         // Get the layer
         restLayerMockMvc.perform(get("/api/layers/{id}", Long.MAX_VALUE))
@@ -210,7 +580,8 @@ public class LayerResourceIntTest {
     @Transactional
     public void updateLayer() throws Exception {
         // Initialize the database
-        layerRepository.saveAndFlush(layer);
+        layerService.save(layer);
+
         int databaseSizeBeforeUpdate = layerRepository.findAll().size();
 
         // Update the layer
@@ -266,7 +637,8 @@ public class LayerResourceIntTest {
     @Transactional
     public void deleteLayer() throws Exception {
         // Initialize the database
-        layerRepository.saveAndFlush(layer);
+        layerService.save(layer);
+
         int databaseSizeBeforeDelete = layerRepository.findAll().size();
 
         // Get the layer

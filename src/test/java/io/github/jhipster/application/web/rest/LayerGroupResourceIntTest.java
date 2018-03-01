@@ -3,8 +3,14 @@ package io.github.jhipster.application.web.rest;
 import io.github.jhipster.application.JhipsterSampleMysqlApp;
 
 import io.github.jhipster.application.domain.LayerGroup;
+import io.github.jhipster.application.domain.Layer;
+import io.github.jhipster.application.domain.LayerGroup;
+import io.github.jhipster.application.domain.LayerGroup;
 import io.github.jhipster.application.repository.LayerGroupRepository;
+import io.github.jhipster.application.service.LayerGroupService;
 import io.github.jhipster.application.web.rest.errors.ExceptionTranslator;
+import io.github.jhipster.application.service.dto.LayerGroupCriteria;
+import io.github.jhipster.application.service.LayerGroupQueryService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +51,12 @@ public class LayerGroupResourceIntTest {
     private LayerGroupRepository layerGroupRepository;
 
     @Autowired
+    private LayerGroupService layerGroupService;
+
+    @Autowired
+    private LayerGroupQueryService layerGroupQueryService;
+
+    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -63,7 +75,7 @@ public class LayerGroupResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final LayerGroupResource layerGroupResource = new LayerGroupResource(layerGroupRepository);
+        final LayerGroupResource layerGroupResource = new LayerGroupResource(layerGroupService, layerGroupQueryService);
         this.restLayerGroupMockMvc = MockMvcBuilders.standaloneSetup(layerGroupResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -155,6 +167,124 @@ public class LayerGroupResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllLayerGroupsByGroupNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        layerGroupRepository.saveAndFlush(layerGroup);
+
+        // Get all the layerGroupList where groupName equals to DEFAULT_GROUP_NAME
+        defaultLayerGroupShouldBeFound("groupName.equals=" + DEFAULT_GROUP_NAME);
+
+        // Get all the layerGroupList where groupName equals to UPDATED_GROUP_NAME
+        defaultLayerGroupShouldNotBeFound("groupName.equals=" + UPDATED_GROUP_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayerGroupsByGroupNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        layerGroupRepository.saveAndFlush(layerGroup);
+
+        // Get all the layerGroupList where groupName in DEFAULT_GROUP_NAME or UPDATED_GROUP_NAME
+        defaultLayerGroupShouldBeFound("groupName.in=" + DEFAULT_GROUP_NAME + "," + UPDATED_GROUP_NAME);
+
+        // Get all the layerGroupList where groupName equals to UPDATED_GROUP_NAME
+        defaultLayerGroupShouldNotBeFound("groupName.in=" + UPDATED_GROUP_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayerGroupsByGroupNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        layerGroupRepository.saveAndFlush(layerGroup);
+
+        // Get all the layerGroupList where groupName is not null
+        defaultLayerGroupShouldBeFound("groupName.specified=true");
+
+        // Get all the layerGroupList where groupName is null
+        defaultLayerGroupShouldNotBeFound("groupName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllLayerGroupsByLayersIsEqualToSomething() throws Exception {
+        // Initialize the database
+        Layer layers = LayerResourceIntTest.createEntity(em);
+        em.persist(layers);
+        em.flush();
+        layerGroup.addLayers(layers);
+        layerGroupRepository.saveAndFlush(layerGroup);
+        Long layersId = layers.getId();
+
+        // Get all the layerGroupList where layers equals to layersId
+        defaultLayerGroupShouldBeFound("layersId.equals=" + layersId);
+
+        // Get all the layerGroupList where layers equals to layersId + 1
+        defaultLayerGroupShouldNotBeFound("layersId.equals=" + (layersId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllLayerGroupsBySubGroupsIsEqualToSomething() throws Exception {
+        // Initialize the database
+        LayerGroup subGroups = LayerGroupResourceIntTest.createEntity(em);
+        em.persist(subGroups);
+        em.flush();
+        layerGroup.addSubGroups(subGroups);
+        layerGroupRepository.saveAndFlush(layerGroup);
+        Long subGroupsId = subGroups.getId();
+
+        // Get all the layerGroupList where subGroups equals to subGroupsId
+        defaultLayerGroupShouldBeFound("subGroupsId.equals=" + subGroupsId);
+
+        // Get all the layerGroupList where subGroups equals to subGroupsId + 1
+        defaultLayerGroupShouldNotBeFound("subGroupsId.equals=" + (subGroupsId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllLayerGroupsByParentGroupIsEqualToSomething() throws Exception {
+        // Initialize the database
+        LayerGroup parentGroup = LayerGroupResourceIntTest.createEntity(em);
+        em.persist(parentGroup);
+        em.flush();
+        layerGroup.setParentGroup(parentGroup);
+        layerGroupRepository.saveAndFlush(layerGroup);
+        Long parentGroupId = parentGroup.getId();
+
+        // Get all the layerGroupList where parentGroup equals to parentGroupId
+        defaultLayerGroupShouldBeFound("parentGroupId.equals=" + parentGroupId);
+
+        // Get all the layerGroupList where parentGroup equals to parentGroupId + 1
+        defaultLayerGroupShouldNotBeFound("parentGroupId.equals=" + (parentGroupId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned
+     */
+    private void defaultLayerGroupShouldBeFound(String filter) throws Exception {
+        restLayerGroupMockMvc.perform(get("/api/layer-groups?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(layerGroup.getId().intValue())))
+            .andExpect(jsonPath("$.[*].groupName").value(hasItem(DEFAULT_GROUP_NAME.toString())));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned
+     */
+    private void defaultLayerGroupShouldNotBeFound(String filter) throws Exception {
+        restLayerGroupMockMvc.perform(get("/api/layer-groups?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+    }
+
+
+    @Test
+    @Transactional
     public void getNonExistingLayerGroup() throws Exception {
         // Get the layerGroup
         restLayerGroupMockMvc.perform(get("/api/layer-groups/{id}", Long.MAX_VALUE))
@@ -165,7 +295,8 @@ public class LayerGroupResourceIntTest {
     @Transactional
     public void updateLayerGroup() throws Exception {
         // Initialize the database
-        layerGroupRepository.saveAndFlush(layerGroup);
+        layerGroupService.save(layerGroup);
+
         int databaseSizeBeforeUpdate = layerGroupRepository.findAll().size();
 
         // Update the layerGroup
@@ -209,7 +340,8 @@ public class LayerGroupResourceIntTest {
     @Transactional
     public void deleteLayerGroup() throws Exception {
         // Initialize the database
-        layerGroupRepository.saveAndFlush(layerGroup);
+        layerGroupService.save(layerGroup);
+
         int databaseSizeBeforeDelete = layerGroupRepository.findAll().size();
 
         // Get the layerGroup

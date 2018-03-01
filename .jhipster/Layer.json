@@ -61,6 +61,6 @@
     "entityTableName": "layer",
     "dto": "no",
     "pagination": "pagination",
-    "service": "no",
-    "jpaMetamodelFiltering": false
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": true
 }
