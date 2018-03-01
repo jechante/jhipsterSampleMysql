@@ -1,0 +1,89 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myLayerLabel">Create or edit a Layer</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!layer.id">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="layer.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_layerName">Layer Name</label>
+            <input type="text" class="form-control" name="layerName" id="field_layerName"
+                [(ngModel)]="layer.layerName" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_identifier" ngbTooltip="GIS服务器中该图层标识代码">Identifier</label>
+            <input type="text" class="form-control" name="identifier" id="field_identifier"
+                [(ngModel)]="layer.identifier" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_source">Source</label>
+            <select class="form-control" name="source" [(ngModel)]="layer.source" id="field_source" >
+                <option value="OGC_WMS">OGC_WMS</option>
+                <option value="OGC_WFS">OGC_WFS</option>
+                <option value="OGC_WMST">OGC_WMST</option>
+                <option value="OGC_WCS">OGC_WCS</option>
+                <option value="ARCGIS_REST">ARCGIS_REST</option>
+                <option value="SUPERMAP_REST">SUPERMAP_REST</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_pointQueryType" ngbTooltip="地图点击查询">Point Query Type</label>
+            <select class="form-control" name="pointQueryType" [(ngModel)]="layer.pointQueryType" id="field_pointQueryType" >
+                <option value="WMS_GETFEATUREINFO">WMS_GETFEATUREINFO</option>
+                <option value="WFS_CQL">WFS_CQL</option>
+                <option value="WFS_OGC">WFS_OGC</option>
+                <option value="ARCGIS_REST">ARCGIS_REST</option>
+                <option value="SUPERMAP_REST">SUPERMAP_REST</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_style" ngbTooltip="当ServerType为服务器端渲染且除了默认样式还有其他样式时，需要设置显示样式">Style</label>
+            <input type="text" class="form-control" name="style" id="field_style"
+                [(ngModel)]="layer.style" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_poiType" ngbTooltip="POI相关">Poi Type</label>
+            <select class="form-control" name="poiType" [(ngModel)]="layer.poiType" id="field_poiType" >
+                <option value="XY">XY</option>
+                <option value="WFS">WFS</option>
+                <option value="ARCGIS_REST">ARCGIS_REST</option>
+                <option value="SUPERMAP_REST">SUPERMAP_REST</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_poiURL">Poi URL</label>
+            <input type="text" class="form-control" name="poiURL" id="field_poiURL"
+                [(ngModel)]="layer.poiURL" />
+        </div>
+
+        <div class="form-group">
+            <label class="form-control-label" for="field_gisServer">Gis Server</label>
+            <select class="form-control" id="field_gisServer" name="gisServer" [(ngModel)]="layer.gisServer" >
+                <option [ngValue]="null"></option>
+                <option [ngValue]="gisServerOption.id === layer.gisServer?.id ? layer.gisServer : gisServerOption" *ngFor="let gisServerOption of gisservers; trackBy: trackGisServerById">{{gisServerOption.serverName}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_layerGroup">Layer Group</label>
+            <select class="form-control" id="field_layerGroup" name="layerGroup" [(ngModel)]="layer.layerGroup" >
+                <option [ngValue]="null"></option>
+                <option [ngValue]="layerGroupOption.id === layer.layerGroup?.id ? layer.layerGroup : layerGroupOption" *ngFor="let layerGroupOption of layergroups; trackBy: trackLayerGroupById">{{layerGroupOption.groupName}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>

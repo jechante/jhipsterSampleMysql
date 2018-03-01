@@ -1,0 +1,43 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myGisServerLabel">Create or edit a Gis Server</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!gisServer.id">
+            <label for="id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="gisServer.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_serverName">Server Name</label>
+            <input type="text" class="form-control" name="serverName" id="field_serverName"
+                [(ngModel)]="gisServer.serverName" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_url">Url</label>
+            <input type="text" class="form-control" name="url" id="field_url"
+                [(ngModel)]="gisServer.url" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" for="field_vendor">Vendor</label>
+            <select class="form-control" name="vendor" [(ngModel)]="gisServer.vendor" id="field_vendor" >
+                <option value="GEOSERVER">GEOSERVER</option>
+                <option value="ARCGIS">ARCGIS</option>
+                <option value="SUPERMAP">SUPERMAP</option>
+            </select>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span>Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span>Save</span>
+        </button>
+    </div>
+</form>

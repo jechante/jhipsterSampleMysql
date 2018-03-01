@@ -1,0 +1,62 @@
+
+<div *ngIf="layer">
+    <h2><span>Layer</span> {{layer.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span>Layer Name</span></dt>
+        <dd>
+            <span>{{layer.layerName}}</span>
+        </dd>
+        <dt><span ngbTooltip="GIS服务器中该图层标识代码">Identifier</span></dt>
+        <dd>
+            <span>{{layer.identifier}}</span>
+        </dd>
+        <dt><span>Source</span></dt>
+        <dd>
+            <span>{{layer.source}}</span>
+        </dd>
+        <dt><span ngbTooltip="地图点击查询">Point Query Type</span></dt>
+        <dd>
+            <span>{{layer.pointQueryType}}</span>
+        </dd>
+        <dt><span ngbTooltip="当ServerType为服务器端渲染且除了默认样式还有其他样式时，需要设置显示样式">Style</span></dt>
+        <dd>
+            <span>{{layer.style}}</span>
+        </dd>
+        <dt><span ngbTooltip="POI相关">Poi Type</span></dt>
+        <dd>
+            <span>{{layer.poiType}}</span>
+        </dd>
+        <dt><span>Poi URL</span></dt>
+        <dd>
+            <span>{{layer.poiURL}}</span>
+        </dd>
+        <dt><span>Gis Server</span></dt>
+        <dd>
+            <div *ngIf="layer.gisServer">
+                <a [routerLink]="['/gis-server', layer.gisServer?.id]">{{layer.gisServer?.serverName}}</a>
+            </div>
+        </dd>
+        <dt><span>Layer Group</span></dt>
+        <dd>
+            <div *ngIf="layer.layerGroup">
+                <a [routerLink]="['/layer-group', layer.layerGroup?.id]">{{layer.layerGroup?.groupName}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'layer/'+ layer.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span> Edit</span>
+    </button>
+</div>

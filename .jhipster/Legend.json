@@ -1,0 +1,27 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "layer",
+            "otherEntityName": "layer",
+            "otherEntityField": "layerName"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "legendName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "logo",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20180228120457",
+    "entityTableName": "legend",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no",
+    "jpaMetamodelFiltering": false
+}

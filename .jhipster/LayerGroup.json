@@ -1,0 +1,35 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "layers",
+            "otherEntityName": "layer",
+            "otherEntityRelationshipName": "layerGroup"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "subGroups",
+            "otherEntityName": "layerGroup",
+            "otherEntityRelationshipName": "parentGroup"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "parentGroup",
+            "otherEntityName": "layerGroup",
+            "otherEntityField": "groupName"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "groupName",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20180228120456",
+    "entityTableName": "layer_group",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no",
+    "jpaMetamodelFiltering": false
+}

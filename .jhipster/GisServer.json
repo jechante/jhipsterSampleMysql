@@ -1,0 +1,32 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "layers",
+            "otherEntityName": "layer",
+            "otherEntityRelationshipName": "gisServer"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "serverName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "url",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "vendor",
+            "fieldType": "ServerVendor",
+            "fieldValues": "GEOSERVER,ARCGIS,SUPERMAP"
+        }
+    ],
+    "changelogDate": "20180228120458",
+    "entityTableName": "gis_server",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no",
+    "jpaMetamodelFiltering": false
+}

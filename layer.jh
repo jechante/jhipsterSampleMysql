@@ -1,0 +1,105 @@
+entity Layer {
+	layerName String,
+    /**
+	* GIS服务器中该图层标识代码
+	*/
+    identifier String,
+    source ServerType,
+    /**
+	* 地图点击查询
+	*/
+    pointQueryType PointQueryType,
+    /**
+	* 当ServerType为服务器端渲染且除了默认样式还有其他样式时，需要设置显示样式
+	*/
+    style String,
+    /**
+	* POI相关
+	*/
+    poiType PoiType,
+    poiURL String
+
+}
+
+entity LayerGroup {
+	groupName String,
+}
+
+entity Legend {
+	legendName String,
+    logo String
+}
+
+entity GisServer {
+	serverName String,
+    url String,
+    vendor ServerVendor,
+
+}
+
+enum ServerVendor {
+    GEOSERVER, ARCGIS, SUPERMAP
+}
+
+enum ServerType {
+    OGC_WMS, OGC_WFS, OGC_WMST, OGC_WCS,
+    ARCGIS_REST, SUPERMAP_REST
+}
+
+enum PointQueryType {
+    WMS_GETFEATUREINFO, WFS_CQL, WFS_OGC,
+    ARCGIS_REST, SUPERMAP_REST
+}
+
+enum PoiType {
+    XY, WFS, ARCGIS_REST, SUPERMAP_REST
+}
+
+//relationship ManyToOne {
+//	Legend{layer(layerName)} to Layer
+//}
+
+//relationship OneToMany {
+//	Layer{legends} to Legend
+//}
+
+//relationship ManyToOne {
+//	Layer{serveredBy(serverName)} to GisServer
+//}
+
+//relationship ManyToOne {
+//	Layer{group(groupName)} to LayerGroup
+//}
+
+//relationship ManyToOne {
+//	LayerGroup{fatherGroup(groupName)} to LayerGroup
+//}
+
+relationship OneToMany {
+	Layer{legends} to Legend{layer(layerName)}
+}
+
+relationship OneToMany {
+	GisServer{layers} to Layer{gisServer(serverName)}
+}
+
+relationship OneToMany {
+	LayerGroup{layers} to Layer{layerGroup(groupName)}
+}
+
+relationship OneToMany {
+	LayerGroup{subGroups} to LayerGroup{parentGroup(groupName)}
+}
+
+// Set pagination options
+paginate * with pagination
+
+//dto * with mapstruct
+
+// Set filter options
+//filter Layer
+
+// Set service options to all except few
+//service all with serviceImpl
+// Set an angular suffix
+// angularSuffix * with mySuffix

@@ -1,0 +1,66 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "legends",
+            "otherEntityName": "legend",
+            "otherEntityRelationshipName": "layer"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "gisServer",
+            "otherEntityName": "gisServer",
+            "otherEntityField": "serverName"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "layerGroup",
+            "otherEntityName": "layerGroup",
+            "otherEntityField": "groupName"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "layerName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "identifier",
+            "javadoc": "GIS服务器中该图层标识代码",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "source",
+            "fieldType": "ServerType",
+            "fieldValues": "OGC_WMS,OGC_WFS,OGC_WMST,OGC_WCS,ARCGIS_REST,SUPERMAP_REST"
+        },
+        {
+            "fieldName": "pointQueryType",
+            "javadoc": "地图点击查询",
+            "fieldType": "PointQueryType",
+            "fieldValues": "WMS_GETFEATUREINFO,WFS_CQL,WFS_OGC,ARCGIS_REST,SUPERMAP_REST"
+        },
+        {
+            "fieldName": "style",
+            "javadoc": "当ServerType为服务器端渲染且除了默认样式还有其他样式时，需要设置显示样式",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "poiType",
+            "javadoc": "POI相关",
+            "fieldType": "PoiType",
+            "fieldValues": "XY,WFS,ARCGIS_REST,SUPERMAP_REST"
+        },
+        {
+            "fieldName": "poiURL",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20180228120455",
+    "entityTableName": "layer",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no",
+    "jpaMetamodelFiltering": false
+}

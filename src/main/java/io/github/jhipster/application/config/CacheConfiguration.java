@@ -42,6 +42,14 @@ public class CacheConfiguration {
             cm.createCache(io.github.jhipster.application.domain.User.class.getName(), jcacheConfiguration);
             cm.createCache(io.github.jhipster.application.domain.Authority.class.getName(), jcacheConfiguration);
             cm.createCache(io.github.jhipster.application.domain.User.class.getName() + ".authorities", jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.Layer.class.getName(), jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.Layer.class.getName() + ".legends", jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.LayerGroup.class.getName(), jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.LayerGroup.class.getName() + ".layers", jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.LayerGroup.class.getName() + ".subGroups", jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.Legend.class.getName(), jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.GisServer.class.getName(), jcacheConfiguration);
+            cm.createCache(io.github.jhipster.application.domain.GisServer.class.getName() + ".layers", jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }
