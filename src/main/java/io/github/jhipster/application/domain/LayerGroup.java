@@ -40,7 +40,7 @@ public class LayerGroup implements Serializable {
     private Set<LayerGroup> subGroups = new HashSet<>();
 
     @ManyToOne
-    @JsonIgnoreProperties({"layers", "subGroups", "parentGroup"}) // 出于业务考虑，其实可以忽略掉，但出于CRUD维护关系需要保留id和name
+    @JsonIgnoreProperties({"layers", "subGroups", "parentGroup"}) // 出于业务考虑，其实可以忽略掉，但出于前端CRUD维护关系需要保留id和name
     private LayerGroup parentGroup;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
